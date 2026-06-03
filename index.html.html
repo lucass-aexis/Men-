@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santi's Pizza — Menú</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,400&family=Oswald:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    background: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    min-height: 100vh;
+    touch-action: pan-y;
+  }
+
+  .menu {
+    width: 100%;
+    max-width: 760px;
+    background: #0f0b08;
+    border-radius: 6px;
+    overflow: hidden;
+    animation: rise 0.9s cubic-bezier(.22,1,.36,1) both;
+    position: relative;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .menu::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid rgba(210,160,80,0.25);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ══════════ HEADER ══════════ */
+  .header {
+    background: #100b06;
+    padding: 44px 50px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,80,20,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 100%, rgba(180,60,10,0.10) 0%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .top-rule {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, transparent, #C8A050, transparent);
+    margin: 0 auto 22px;
+  }
+
+  /* layout header: texto izquierda, pizza derecha */
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-wrap {
+    flex: 1;
+    text-align: center;
+  }
+
+  .brand-small {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 9px;
+    color: #C8A050;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 78px;
+    line-height: 0.9;
+    color: #F5EDDB;
+    letter-spacing: -1px;
+    text-shadow:
+      0 0 40px rgba(200,160,80,0.25),
+      0 4px 0 rgba(160,40,10,0.6);
+  }
+
+  .brand em {
+    font-style: italic;
+    font-weight: 400;
+    color: #E07030;
+  }
+
+  /* ── Pizza SVG ── */
+  .pizza-hero {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    animation: floatPizza 4s ease-in-out infinite;
+    filter: drop-shadow(0 8px 24px rgba(200,80,20,0.45));
+    cursor: pointer;
+    transition: filter 0.3s;
+  }
+
+  .pizza-hero:hover {
+    filter: drop-shadow(0 12px 36px rgba(230,100,20,0.7));
+    animation-play-state: paused;
+  }
+
+  @keyframes floatPizza {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-10px) rotate(3deg); }
+  }
+
+  /* click spin */
+  .pizza-hero.spin {
+    animation: spinPizza 0.6s cubic-bezier(.36,.07,.19,.97);
+  }
+  @keyframes spinPizza {
+    0%   { transform: rotate(0deg) scale(1); }
+    40%  { transform: rotate(200deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .orn-line {
+    flex: 1;
+    max-width: 140px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #C8A050);
+  }
+  .orn-line.r { background: linear-gradient(to left, transparent, #C8A050); }
+  .orn-diamond {
+    width: 6px; height: 6px;
+    background: #C8A050;
+    transform: rotate(45deg);
+  }
+
+  /* ══════════ ESPECIALIDADES HEADER ══════════ */
+  .section-header {
+    background: #C8A050;
+    padding: 11px 0;
+    text-align: center;
+  }
+  .section-header span {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 10px;
+    color: #0f0b06;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* ══════════ GRID ══════════ */
+  .pizzas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 6px 14px 28px;
+    gap: 0;
+  }
+
+  .pizza-item {
+    padding: 17px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.045);
+    transition: background 0.25s, transform 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pizza-item:nth-child(odd) {
+    border-right: 1px solid rgba(255,255,255,0.045);
+  }
+
+  .pizza-item::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px; height: 100%;
+    background: #E07030;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
+  }
+
+  .pizza-item:hover::after,
+  .pizza-item.active::after {
+    transform: scaleY(1);
+  }
+
+  .pizza-item:hover,
+  .pizza-item.active {
+    background: rgba(200,160,80,0.08);
+  }
+
+  .pizza-item.active .pizza-ingredients {
+    opacity: 1;
+    color: #F5EDDB;
+  }
+
+  .pizza-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #F5EDDB;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+
+  .pizza-name::before {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: #E07030;
+    flex-shrink: 0;
+    border-radius: 2px;
+    transition: width 0.25s;
+  }
+
+  .pizza-item:hover .pizza-name::before,
+  .pizza-item.active .pizza-name::before {
+    width: 28px;
+  }
+
+  .pizza-ingredients {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #C8A050;
+    opacity: 0.75;
+    padding-left: 30px;
+    line-height: 1.6;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  /* ── tooltip ingredientes en móvil ── */
+  .tap-hint {
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(200,160,80,0.35);
+    text-transform: uppercase;
+    padding: 10px 0 2px;
+  }
+
+  /* ── footer ── */
+  .menu-footer {
+    padding: 22px 50px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border-top: 1px solid rgba(200,160,80,0.15);
+  }
+  .foot-dot {
+    width: 5px; height: 5px;
+    background: #E07030;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .foot-line {
+    flex: 1;
+    max-width: 100px;
+    height: 1px;
+    background: rgba(200,160,80,0.25);
+  }
+  .foot-icon {
+    font-size: 22px;
+    opacity: 0.6;
+  }
+
+  /* ══════════ RESPONSIVE ══════════ */
+  @media (max-width: 600px) {
+    body { padding: 16px 8px; }
+
+    .header { padding: 32px 20px 28px; }
+
+    .header-inner {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .pizza-hero {
+      width: 130px;
+      height: 130px;
+      order: -1;
+    }
+
+    .brand { font-size: 54px; }
+
+    .brand-small { letter-spacing: 6px; }
+
+    .orn-line { max-width: 80px; }
+
+    .pizzas-grid {
+      grid-template-columns: 1fr;
+      padding: 4px 8px 24px;
+    }
+
+    .pizza-item {
+      border-right: none !important;
+      padding: 14px 16px;
+    }
+
+    .pizza-name { font-size: 17px; letter-spacing: 2px; }
+    .pizza-ingredients { font-size: 10.5px; }
+
+    .menu-footer { padding: 18px 24px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="menu">
+
+  <div class="header">
+    <div class="top-rule"></div>
+
+    <div class="header-inner">
+      <!-- Texto -->
+      <div class="brand-wrap">
+        <div class="brand-small">Pizzería</div>
+        <div class="brand">Santi's<br><em>Pizza</em></div>
+      </div>
+
+      <!-- Pizza SVG animada -->
+      <svg class="pizza-hero" id="pizzaSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- sombra -->
+        <ellipse cx="100" cy="195" rx="60" ry="6" fill="rgba(0,0,0,0.35)"/>
+        <!-- masa base -->
+        <circle cx="100" cy="100" r="92" fill="#D4933A"/>
+        <!-- orilla -->
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#C47B20" stroke-width="14"/>
+        <!-- salsa -->
+        <circle cx="100" cy="100" r="78" fill="#B33A1A"/>
+        <!-- queso -->
+        <circle cx="100" cy="100" r="74" fill="#E8C060" opacity="0.85"/>
+        <!-- manchas de queso derretido -->
+        <ellipse cx="80" cy="85" rx="18" ry="12" fill="#F0D070" opacity="0.7" transform="rotate(-20 80 85)"/>
+        <ellipse cx="120" cy="110" rx="16" ry="10" fill="#F0D070" opacity="0.6" transform="rotate(15 120 110)"/>
+        <ellipse cx="95" cy="125" rx="14" ry="9" fill="#F0D070" opacity="0.65" transform="rotate(-10 95 125)"/>
+        <!-- pepperoni -->
+        <circle cx="90" cy="80" r="10" fill="#8B1A00"/>
+        <circle cx="90" cy="80" r="10" fill="none" stroke="#6A1400" stroke-width="1.5"/>
+        <circle cx="115" cy="95" r="9" fill="#8B1A00"/>
+        <circle cx="115" cy="95" r="9" fill="none" stroke="#6A1400" stroke-width="1.5"/>
+        <circle cx="82" cy="112" r="9" fill="#8B1A00"/>
+        <circle cx="82" cy="112" r="9" fill="none" stroke="#6A1400" stroke-width="1.5"/>
+        <circle cx="110" cy="120" r="8" fill="#8B1A00"/>
+        <circle cx="108" cy="75" r="7" fill="#8B1A00"/>
+        <!-- brillitos en pepperoni -->
+        <circle cx="86" cy="76" r="2" fill="rgba(255,255,255,0.2)"/>
+        <circle cx="111" cy="91" r="2" fill="rgba(255,255,255,0.2)"/>
+        <!-- champiñones -->
+        <ellipse cx="70" cy="98" rx="8" ry="5" fill="#A0784A"/>
+        <rect x="67" y="98" width="6" height="5" rx="1" fill="#C09060"/>
+        <ellipse cx="130" cy="85" rx="7" ry="4.5" fill="#A0784A"/>
+        <rect x="127" y="85" width="6" height="5" rx="1" fill="#C09060"/>
+        <!-- aceitunas -->
+        <circle cx="100" cy="100" r="5" fill="#2D4A1E"/>
+        <circle cx="100" cy="100" r="2" fill="#C8A050"/>
+        <circle cx="75" cy="118" r="4.5" fill="#2D4A1E"/>
+        <circle cx="75" cy="118" r="1.8" fill="#C8A050"/>
+        <!-- líneas de corte -->
+        <line x1="100" y1="8" x2="100" y2="192" stroke="rgba(180,90,20,0.3)" stroke-width="1.5"/>
+        <line x1="8" y1="100" x2="192" y2="100" stroke="rgba(180,90,20,0.3)" stroke-width="1.5"/>
+        <line x1="35" y1="35" x2="165" y2="165" stroke="rgba(180,90,20,0.3)" stroke-width="1.5"/>
+        <line x1="165" y1="35" x2="35" y2="165" stroke="rgba(180,90,20,0.3)" stroke-width="1.5"/>
+        <!-- brillo general -->
+        <ellipse cx="75" cy="65" rx="28" ry="18" fill="rgba(255,255,255,0.07)" transform="rotate(-30 75 65)"/>
+      </svg>
+    </div>
+
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line r"></div>
+    </div>
+  </div>
+
+  <div class="section-header"><span>Especialidades</span></div>
+
+  <div class="pizzas-grid" id="pizzaGrid">
+
+    <div class="pizza-item">
+      <div class="pizza-name">Hawaiana</div>
+      <div class="pizza-ingredients">Queso · Jamón · Piña</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Campesina</div>
+      <div class="pizza-ingredients">Queso · Jitomate · Champiñones · Pimiento · Cebolla</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Carnes Frías</div>
+      <div class="pizza-ingredients">Queso · Jamón · Salchicha · Tocino · Chorizo</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Máxima</div>
+      <div class="pizza-ingredients">Queso · Jamón · Pepperoni · Chorizo · Salchicha · Pimiento · Cebolla</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Mexicana</div>
+      <div class="pizza-ingredients">Queso · Tocino · Chorizo · Jalapeño</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Veracruzana</div>
+      <div class="pizza-ingredients">Queso · Atún · Pimiento · Cebolla</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Pepperoni</div>
+      <div class="pizza-ingredients">Queso · Pepperoni</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Festiva</div>
+      <div class="pizza-ingredients">Queso · Pepperoni · Champiñones · Salchicha · Cebolla · Aceitunas · Pimiento</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Al Pastor</div>
+      <div class="pizza-ingredients">Queso · Carne al Pastor · Piña</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Vegetariana</div>
+      <div class="pizza-ingredients">Queso · Champiñones · Piña · Pimiento · Aceitunas</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Texas</div>
+      <div class="pizza-ingredients">Queso · Salchicha · Tocino · Jalapeño · Cebolla</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Ranchera</div>
+      <div class="pizza-ingredients">Queso · Frijoles · Chorizo · Jalapeño</div>
+    </div>
+
+    <div class="pizza-item">
+      <div class="pizza-name">Azteca</div>
+      <div class="pizza-ingredients">Queso · Tocino · Chorizo · Jalapeño · Aguacate</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Super Especial</div>
+      <div class="pizza-ingredients">Queso · Pepperoni · Tocino · Champiñones · Pimiento · Cebolla</div>
+    </div>
+    <div class="pizza-item">
+      <div class="pizza-name">Griega</div>
+      <div class="pizza-ingredients">Queso · Jamón · Aceitunas · Pimiento · Cebolla</div>
+    </div>
+
+  </div>
+
+  <div class="menu-footer">
+    <div class="foot-line"></div>
+    <div class="foot-dot"></div>
+    <div class="foot-icon">🍕</div>
+    <div class="foot-dot"></div>
+    <div class="foot-line"></div>
+  </div>
+
+</div>
+
+<script>
+  // Pizza spin al hacer click
+  const pizzaSvg = document.getElementById('pizzaSvg');
+  pizzaSvg.addEventListener('click', () => {
+    pizzaSvg.classList.remove('spin');
+    void pizzaSvg.offsetWidth; // reflow
+    pizzaSvg.classList.add('spin');
+    pizzaSvg.addEventListener('animationend', () => pizzaSvg.classList.remove('spin'), { once: true });
+  });
+
+  // Highlight activo al tocar/click en pizzas (útil en móvil)
+  document.querySelectorAll('.pizza-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.pizza-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
